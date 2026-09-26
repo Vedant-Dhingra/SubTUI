@@ -73,9 +73,12 @@ func (m model) handlesKeys(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	}
 
 	if key == "g" || m.lastKey == "g" {
+		afterG := m.lastKey == "g"
+		m.lastKey = "" // Every combo ends here, or the next key would still count as one
+
 		switch key {
 		case "g":
-			if m.lastKey == "g" {
+			if afterG {
 				return navigateTop(m), nil
 			} else {
 				m.lastKey = "g"
@@ -85,8 +88,6 @@ func (m model) handlesKeys(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 			return displayAlbumFromSelected(m)
 		case "r":
 			return displayArtistFromSelected(m)
-		default:
-			m.lastKey = ""
 		}
 	}
 
@@ -273,6 +274,10 @@ func (m model) handlesKeys(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	// OTHER KEYBINDS
 	if keyMatches(key, api.AppConfig.Keybinds.Other.CreateShareLink) {
 		return m, mediaCreateShare(m)
+	}
+
+	if keyMatches(key, api.AppConfig.Keybinds.Other.StartRadio) {
+		return startRadio(m)
 	}
 
 	if keyMatches(key, api.AppConfig.Keybinds.Other.ToggleNotifications) {
@@ -1732,6 +1737,10 @@ func playerMenu(m model, msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	// OTHER KEYBINDS
 	if keyMatches(key, api.AppConfig.Keybinds.Other.ToggleNotifications) {
 		return toggleNotifications(m), nil
+	}
+
+	if keyMatches(key, api.AppConfig.Keybinds.Other.StartRadio) {
+		return startRadio(m)
 	}
 
 	// Navigation

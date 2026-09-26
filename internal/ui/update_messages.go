@@ -311,6 +311,7 @@ func (m model) handleStatus(msg statusMsg) (tea.Model, tea.Cmd) {
 
 		// Update queue
 		m.syncNextSong()
+		cmds = append(cmds, m.refillRadio())
 
 		currentSong := m.queue[m.queueIndex]
 		m.lastPlayedSongPath = m.playerStatus.Path // Update previous song

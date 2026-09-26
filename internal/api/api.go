@@ -415,6 +415,44 @@ func SubsonicCreateShare(ids []string) (string, error) {
 
 }
 
+// SubsonicGetSimilarSongs returns songs similar to the given song, album or artist
+func SubsonicGetSimilarSongs(id string, count int) ([]Song, error) {
+	params := url.Values{
+		"id":    {id},
+		"count": {strconv.Itoa(count)},
+	}
+
+	data, err := subsonicGET("/getSimilarSongs", params)
+	if err != nil {
+		return nil, err
+	}
+
+	return data.Response.SimilarSongs.Songs, nil
+}
+
+// SubsonicGetRandomSongs returns random songs, optionally limited to a genre and a year range (0 to ignore)
+func SubsonicGetRandomSongs(count int, genre string, fromYear int, toYear int) ([]Song, error) {
+	params := url.Values{
+		"size": {strconv.Itoa(count)},
+	}
+	if genre != "" {
+		params.Set("genre", genre)
+	}
+	if fromYear > 0 {
+		params.Set("fromYear", strconv.Itoa(fromYear))
+	}
+	if toYear > 0 {
+		params.Set("toYear", strconv.Itoa(toYear))
+	}
+
+	data, err := subsonicGET("/getRandomSongs", params)
+	if err != nil {
+		return nil, err
+	}
+
+	return data.Response.RandomSongs.Songs, nil
+}
+
 func SubsonicGetLyrics(ID string) ([]StructuredLyrics, error) {
 	params := url.Values{
 		"id": {ID},

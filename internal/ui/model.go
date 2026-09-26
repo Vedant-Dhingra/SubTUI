@@ -72,6 +72,10 @@ type model struct {
 	queueIndex int
 	loopMode   int
 
+	// Radio
+	radioLoading         bool
+	serverSimilarityDown bool // The server's similarity provider failed this session
+
 	// Stars
 	starredMap map[string]bool
 
@@ -173,6 +177,13 @@ type createShareMsg struct {
 
 type getLyricsMsg struct {
 	result []api.StructuredLyrics
+}
+
+type radioResultMsg struct {
+	songs  []api.Song
+	seed   radioSeed
+	source int
+	err    error
 }
 
 type errMsg struct {

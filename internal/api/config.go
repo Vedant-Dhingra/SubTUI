@@ -25,6 +25,7 @@ type Config struct {
 	App      App      `toml:"app"`
 	Theme    Theme    `toml:"theme" comment:"Format: ['Light color', 'Dark color']"`
 	Filters  Filters  `toml:"filters"`
+	Radio    Radio    `toml:"radio"`
 	Keybinds Keybinds `toml:"keybinds"`
 	Columns  Columns  `toml:"columns"`
 }
@@ -77,6 +78,15 @@ type Filters struct {
 	MaxPlayCount     int      `toml:"max_play_count" comment:"Exclude songs with a play count less than or equal to this number, 0 to disable"`
 	ExcludeFavorites bool     `toml:"exclude_favorites" comment:"Set to true to exclude songs that are marked as a favorite/starred"`
 	MaxRating        int      `toml:"max_rating" comment:"Exclude songs with a rating less than or equal to this number (1-5), 0 to disable"`
+}
+
+type Radio struct {
+	SongCount        int  `toml:"song_count" comment:"Number of similar songs to fetch when starting a radio"`
+	ServerSimilarity bool `toml:"server_similarity" comment:"Ask the server's similarity provider (e.g. Last.fm) first, disable if the server has none"`
+	LocalMix         bool `toml:"local_mix" comment:"Build a mix from matching genres, years and artists when the server finds no similar songs"`
+	AutoRefill      bool `toml:"auto_refill" comment:"Automatically add similar songs when the queue is about to run out"`
+	RefillThreshold int  `toml:"refill_threshold" comment:"Refill the queue when this many songs or fewer are left after the current one"`
+	RandomFallback  bool `toml:"random_fallback" comment:"Add random songs when no similar songs are found"`
 }
 
 type Columns struct {
@@ -201,6 +211,7 @@ type FavoriteKeybinds struct {
 type OtherKeybinds struct {
 	ToggleNotifications []string `toml:"toggle_notifications"`
 	CreateShareLink     []string `toml:"create_share_link"`
+	StartRadio          []string `toml:"start_radio"`
 }
 
 func createDefaultConfig(path string, content []byte, label string, permissions os.FileMode) error {

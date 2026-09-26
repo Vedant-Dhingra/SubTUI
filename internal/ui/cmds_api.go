@@ -206,6 +206,24 @@ func addRatingCmd(ids []string, rating int) tea.Cmd {
 	}
 }
 
+func radioCmd(source int, seed radioSeed, skip func(api.Song) bool) tea.Cmd {
+	return func() tea.Msg {
+		var songs []api.Song
+		var err error
+
+		switch source {
+		case radioSourceServer:
+			songs, err = api.SubsonicGetSimilarSongs(seed.id, radioSongCount())
+		case radioSourceLocal:
+			songs, err = buildLocalMix(seed, skip, radioSongCount())
+		case radioSourceRandom:
+			songs, err = api.SubsonicGetRandomSongs(radioSongCount(), "", 0, 0)
+		}
+
+		return radioResultMsg{songs: songs, seed: seed, source: source, err: err}
+	}
+}
+
 func createMediaShareCmd(ids []string) tea.Cmd {
 	return func() tea.Msg {
 

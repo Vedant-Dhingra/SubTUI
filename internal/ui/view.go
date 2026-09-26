@@ -653,8 +653,12 @@ func footerInformation(m model, width int) string {
 		}
 	}
 
+	if m.radioLoading {
+		notifcationStatus = "[Radio...]"
+	}
+
 	if !m.notify {
-		notifcationStatus = "[Silent]"
+		notifcationStatus = strings.TrimSpace(notifcationStatus + " [Silent]")
 	}
 
 	topRowGap := width - runewidth.StringWidth(songTitle) - runewidth.StringWidth(notifcationStatus)
@@ -1255,6 +1259,7 @@ func helpViewContent() string {
 	otherKeybinds := section("OTHERS",
 		line(keys(api.AppConfig.Keybinds.Other.ToggleNotifications), "Toggle notifications"),
 		line(keys(api.AppConfig.Keybinds.Other.CreateShareLink), "Create share link"),
+		line(keys(api.AppConfig.Keybinds.Other.StartRadio), "Start radio"),
 	)
 
 	columnLeft := lipgloss.JoinVertical(lipgloss.Left,
